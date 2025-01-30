@@ -1,0 +1,21 @@
+kind: HorizontalPodAutoscaler
+apiVersion: autoscaling/v2
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+  name: rhsso-prod-hpa
+  namespace: rhsso-prod
+spec:
+  scaleTargetRef:
+    kind: StatefulSet
+    name: keycloak
+    apiVersion: apps/v1
+  minReplicas: 2
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50

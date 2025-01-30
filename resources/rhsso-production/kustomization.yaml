@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+commonAnnotations:
+  argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+resources:
+- 00_namespace_rhsso-prod.yaml
+- 01_rhsso-operator_resourcegroups.yaml
+# - 01_secret_rhsso-prod-database.yaml
+- 02_rh-sso-operator.yaml
+- 03_deploy_rhsso-prod.yaml
+- 04_rh-sso-hpa.yaml
+# 05_rh-sso-route.yaml

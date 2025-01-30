@@ -1,0 +1,9 @@
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  annotations:
+      argocd.argoproj.io/sync-wave: "0"
+  name: keycloak-prod
+spec:
+  finalizers:
+    - kubernetes

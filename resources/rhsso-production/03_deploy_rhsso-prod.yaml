@@ -1,0 +1,19 @@
+---
+apiVersion: keycloak.org/v1alpha1
+kind: Keycloak
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  name: rhsso-prod
+  labels:
+    app: rhsso-prod
+  namespace: rhsso-prod
+spec:
+  externalAccess:
+    enabled: true
+  instances: 2
+  keycloakDeploymentSpec:
+    imagePullPolicy: Always
+  postgresDeploymentSpec:
+    imagePullPolicy: Always
+  storageClassName: ocs-external-storagecluster-ceph-rbd

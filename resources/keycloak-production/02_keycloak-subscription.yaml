@@ -1,0 +1,17 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  annotations:
+      argocd.argoproj.io/sync-wave: "2"
+  labels:
+    operators.coreos.com/rhbk-operator.keycloak: ''
+  name: rhbk-operator
+  namespace: keycloak
+spec:
+  channel: stable-v22
+  installPlanApproval: Automatic
+  name: rhbk-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+#  startingCSV: rhbk-operator.v22.0.9-opr.1
+

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+      argocd.argoproj.io/sync-wave: "3"
+  name: postgresql-db
+  namespace: keycloak-prod
+spec:
+  serviceName: postgresql-db-service
+  selector:
+    matchLabels:
+      app: postgresql-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgresql-db
+    spec:
+      containers:
+        - name: postgresql-db
+          image: postgres:latest
+          volumeMounts:
+            - mountPath: /data
+              name: cache-volume
+          env:
+            - name: POSTGRES_PASSWORD
+              value: pgsqlpassword
+            - name: POSTGRES_USERNAME
+              value: pgsqladmin
+            - name: PGDATA
+              value: /data/pgdata
+            - name: POSTGRES_DB
+              value: keycloak
+      volumes:
+        - name: cache-volume
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+      argocd.argoproj.io/sync-wave: "4"
+  name: postgres-db
+  namespace: keycloak
+spec:
+  selector:
+    app: postgresql-db
+  ports:
+  - port: 5432
+    protocol: TCP
+    targetPort: 5432

@@ -1,0 +1,79 @@
+---
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  annotations:
+      argocd.argoproj.io/sync-wave: "0"
+  name: openldap
+spec:
+  finalizers:
+    - kubernetes
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+      argocd.argoproj.io/sync-wave: "1"
+  name: openldap
+  namespace: openldap
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  annotations:
+      argocd.argoproj.io/sync-wave: "2"
+  name: anyrole
+  namespace: openldap
+subjects:
+  - kind: ServiceAccount
+    name: openldap
+    namespace: openldap
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: 'system:openshift:scc:anyuid'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+      argocd.argoproj.io/sync-wave: "3"
+  namespace: openldap
+  name: openldap
+spec:
+  selector:
+    matchLabels:
+      app: ldap
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ldap
+    spec:
+      serviceAccount: openldap
+      containers:
+        - name: container
+          image: rroemhild/test-openldap
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+      argocd.argoproj.io/sync-wave: "4"
+  name: openldap
+  namespace: openldap
+spec:
+  selector:
+    app: ldap
+  ports:
+    - protocol: TCP
+      port: 10389
+      targetPort: 10389

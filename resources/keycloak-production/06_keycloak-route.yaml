@@ -1,0 +1,24 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: keycloak
+  namespace: keycloak-prod  
+  annotations:
+      argocd.argoproj.io/sync-wave: "7"
+  labels:
+    app: keycloak
+    app.kubernetes.io/instance: keycloak-development
+    app.kubernetes.io/managed-by: keycloak-operator
+spec:
+  to:
+    kind: Service
+    name: keycloak-development-service
+  tls:
+    termination: passthrough
+    insecureEdgeTerminationPolicy: Redirect
+    certificate: ''
+    key: ''
+    caCertificate: ''
+    destinationCACertificate: ''
+  port:
+    targetPort: https
